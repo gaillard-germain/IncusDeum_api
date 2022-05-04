@@ -46,6 +46,21 @@ class Card
      */
     private $fx;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $frontImage;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $backImage;
+
+    /**
+     * @ORM\Column(type="string", length=60, nullable=true)
+     */
+    private $color;
+
     public function __construct()
     {
         $this->fx = new ArrayCollection();
@@ -124,6 +139,42 @@ class Card
     public function removeFx(fx $fx): self
     {
         $this->fx->removeElement($fx);
+
+        return $this;
+    }
+
+    public function getFrontImage(): ?string
+    {
+        return $this->frontImage;
+    }
+
+    public function setFrontImage(?string $frontImage): self
+    {
+        $this->frontImage = $frontImage;
+
+        return $this;
+    }
+
+    public function getBackImage(): ?string
+    {
+        return $this->backImage;
+    }
+
+    public function setBackImage(?string $backImage): self
+    {
+        $this->backImage = $backImage;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
 
         return $this;
     }

@@ -11,7 +11,7 @@ use App\Entity\{Card, Category, Fx};
 class CardController extends AbstractController
 {
   /**
-   * @Route("/card", name="app_card")
+   * @Route("/card", name="app_card", methods={"GET"})
    */
   public function index(CardRepository $cardRepository): Response
   {
@@ -27,6 +27,9 @@ class CardController extends AbstractController
         "name" => $card->getName(),
         "value" => $card->getValue(),
         "category" => $card->getCategory()->getName(),
+        "frontImage" => $card->getFrontImage(),
+        "backImage" => $card->getBackImage(),
+        "color" => $card->getColor(),
         "description" => $card->getDescription(),
         "fx" => $effects
       ];

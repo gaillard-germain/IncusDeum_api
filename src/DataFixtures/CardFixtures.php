@@ -8,25 +8,30 @@ use App\Entity\{Card, Category, Fx};
 
 class CardFixtures extends Fixture
 {
-  const CARD_COUNT = 10;
+  const CARD_COUNT = 5;
 
   public function load(ObjectManager $manager): void
   {
     for ($i = 0; $i < self::CARD_COUNT; $i++) {
       $category = new Category();
-      $category->setName("Test".$i);
+      $category->setName("Category ".$i);
       $manager->persist($category);
 
       $fx = new Fx();
-      $fx->setName("Test".$i);
-      $fx->setValue("+1/turn");
+      $fx->setName("Fx ".$i);
+      $fx->setValue("+".$i);
       $manager->persist($fx);
 
       $card = new Card();
-      $card->setName("Test".$i);
+      $card->setName("Card ".$i);
       $card->setCategory($category);
       $card->setValue($i);
-      $card->setDescription("Lorem ipsum dolor sit amet.");
+      $card->setFrontImage("front_image".$i.".jpg");
+      $card->setBackImage("back_image".$i.".jpg");
+      $card->setColor("#3f3429");
+      $card->setDescription(
+        "_'Lorem ipsum dolor sit amet, consectetur ad piscing elit.'_"
+      );
       $card->addFx($fx);
       $manager->persist($card);
     }
