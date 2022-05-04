@@ -2,13 +2,15 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+// use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\CardRepository;
-use App\Entity\{Card, Category, Fx};
+use App\Entity\Card;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Form\CardType;
 
-class CardController extends AbstractController
+class CardController extends ApiController
 {
   /**
    * @Route("/card", name="app_card", methods={"GET"})
@@ -16,24 +18,37 @@ class CardController extends AbstractController
   public function index(CardRepository $cardRepository): Response
   {
     $cards = $cardRepository->findAll();
-    $result = [];
-    foreach ($cards as $card) {
-      $effects = [];
-      foreach($card->getFx() as $fx) {
-        $effects[$fx->getName()] = $fx->getValue();
-      };
-      $result[] = [
-        "id" => $card->getId(),
-        "name" => $card->getName(),
-        "value" => $card->getValue(),
-        "category" => $card->getCategory()->getName(),
-        "frontImage" => $card->getFrontImage(),
-        "backImage" => $card->getBackImage(),
-        "color" => $card->getColor(),
-        "description" => $card->getDescription(),
-        "fx" => $effects
-      ];
+    return $this->normalizeData($cards, ['cards_list']);
+  }
+
+  /**
+  * @Route("/card/{id}", name="app_card_detail", methods={"GET"})
+  */
+  public function detail(CardRepository $cardRepository, $id)
+  {
+    $card = $cardRepository->find($id);
+    return $this->normalizeData($card, ['card_detail']);;
+  }
+
+  /**
+  * @Route("/card", name="app_card_create", methods={"POST"})
+  */
+  public function create(Request $request, EntityManagerInterface $manager)
+  {
+    $card = new Card();
+
+    $form = $this->createForm(CardType::class, $card);
+
+    $form->submit(json_decode($request->getContent(), true));
+
+    $form->handleRequest($request);
+
+    if($form->isSubmitted() && $form->isValid()) {
+      $manager->persist($card);
+      $manager->flush();
+      return $this->data($snippet, ['card_detail'], 201);
     }
-    return $this->json($result);
+
+    return ;
   }
 }

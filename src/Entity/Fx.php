@@ -6,6 +6,8 @@ use App\Repository\FxRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=FxRepository::class)
@@ -21,11 +23,13 @@ class Fx
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Groups({"cards_list", "card_detail"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
+     * @Groups({"cards_list", "card_detail"})
      */
     private $value;
 

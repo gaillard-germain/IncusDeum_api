@@ -6,6 +6,9 @@ use App\Repository\CardRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Entity\{Category, Fx};
 
 /**
@@ -17,47 +20,57 @@ class Card
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"cards_list", "card_detail"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=60)
+     * @ORM\Column(type="string", length=60, unique=true)
+     * @Assert\Length(min=2,max=60)
+     * @Groups({"cards_list", "card_detail"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"cards_list", "card_detail"})
      */
     private $value;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"card_detail"})
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity=category::class, inversedBy="cards")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"cards_list", "card_detail"})
      */
     private $category;
 
     /**
      * @ORM\ManyToMany(targetEntity=fx::class, inversedBy="cards")
+     * @Groups({"cards_list", "card_detail"})
      */
     private $fx;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"card_detail"})
      */
     private $frontImage;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"card_detail"})
      */
     private $backImage;
 
     /**
      * @ORM\Column(type="string", length=60, nullable=true)
+     * @Groups({"card_detail"})
      */
     private $color;
 
