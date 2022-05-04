@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 // use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\{Response, Request};
 use App\Repository\CardRepository;
 use App\Entity\Card;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,16 +24,16 @@ class CardController extends ApiController
   /**
   * @Route("/card/{id}", name="app_card_detail", methods={"GET"})
   */
-  public function detail(CardRepository $cardRepository, $id)
+  public function details(CardRepository $cardRepository, $id): Response
   {
     $card = $cardRepository->find($id);
-    return $this->normalizeData($card, ['card_detail']);;
+    return $this->normalizeData($card, ['card_detail']);
   }
 
   /**
   * @Route("/card", name="app_card_create", methods={"POST"})
   */
-  public function create(Request $request, EntityManagerInterface $manager)
+  public function create(Request $request, EntityManagerInterface $manager): Response
   {
     $card = new Card();
 
@@ -46,9 +46,9 @@ class CardController extends ApiController
     if($form->isSubmitted() && $form->isValid()) {
       $manager->persist($card);
       $manager->flush();
-      return $this->data($snippet, ['card_detail'], 201);
+      return $this->normalizeData($card, ['card_detail'], 201);
     }
 
-    return ;
+    return $this->normalizeData(['errors' => $this->formErrors($form)], [], 401);
   }
 }
