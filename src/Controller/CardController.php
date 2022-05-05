@@ -24,7 +24,7 @@ class CardController extends ApiController
   /**
   * @Route("/card/{id}", name="app_card_detail", methods={"GET"})
   */
-  public function details(CardRepository $cardRepository, $id): Response
+  public function details(CardRepository $cardRepository, $id)
   {
     $card = $cardRepository->find($id);
     return $this->normalizeData($card, ['card_detail']);
