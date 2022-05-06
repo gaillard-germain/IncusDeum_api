@@ -19,6 +19,7 @@ class Category
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"cards_list", "card_detail"})
      */
     private $id;
 
