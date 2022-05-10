@@ -47,6 +47,11 @@ class FxRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAll(array $orderBy = null)
+    {
+      return $this->findBy([], $orderBy);
+    }
+
     // /**
     //  * @return Fx[] Returns an array of Fx objects
     //  */

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Annotation\Route;
+use App\Controller\ApiController;
 use App\Repository\CategoryRepository;
 use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,13 +26,19 @@ class CategoryController extends ApiController
      */
      public function create(Request $request, EntityManagerInterface $manager)
      {
-       $content = $request->getContent();
-
        $category = new Category();
-       $category->setName($content);
-       $manager->persist($category);
-       $manager->flush();
+       $form = $this->createForm(CategoryType::class, $category);
 
-       return $this->json($content);
+       $form->submit(json_decode($request->getContent(), true));
+
+       $form->handleRequest($request);
+
+       if($form->isSubmitted() && $form->isValid()) {
+         $manager->persist($category);
+         $manager->flush();
+         return $this->normalizeData($category, ['card_detail'], 201);
+       }
+
+       return $this->normalizeData(['errors' => $this->formErrors($form)], [], 401);
      }
 }
