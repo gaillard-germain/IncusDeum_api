@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use App\Entity\{Category, Fx};
+use App\Entity\{Category, Fx, Media};
 
 /**
  * @ORM\Entity(repositoryClass=CardRepository::class)
@@ -57,13 +57,15 @@ class Card
     private $fx;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\ManyToOne(targetEntity=media::class, inversedBy="cards"))
+     * @ORM\JoinColumn(nullable=true)
      * @Groups({"card_detail"})
      */
     private $frontImage;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\ManyToOne(targetEntity=media::class, inversedBy="cards"))
+     * @ORM\JoinColumn(nullable=true)
      * @Groups({"card_detail"})
      */
     private $backImage;
@@ -156,26 +158,26 @@ class Card
         return $this;
     }
 
-    public function getFrontImage(): ?string
+    public function getFrontImage(): ?media
     {
         return $this->frontImage;
     }
 
-    public function setFrontImage(?string $frontImage): self
+    public function setFrontImage(?media $media): self
     {
-        $this->frontImage = $frontImage;
+        $this->frontImage = $media;
 
         return $this;
     }
 
-    public function getBackImage(): ?string
+    public function getBackImage(): ?media
     {
         return $this->backImage;
     }
 
-    public function setBackImage(?string $backImage): self
+    public function setBackImage(?media $media): self
     {
-        $this->backImage = $backImage;
+        $this->backImage = $media;
 
         return $this;
     }
