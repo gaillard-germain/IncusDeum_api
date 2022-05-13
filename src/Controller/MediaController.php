@@ -20,19 +20,19 @@ class MediaController extends AbstractController
   }
 
   /**
-   * @Route("/media", name="app_upload_media", methods={"POST"})
+   * @Route("/media", name="app_create_media", methods={"POST"})
    */
-  public function upload(EntityManagerInterface $manager, Request $request,
+  public function create(EntityManagerInterface $manager, Request $request,
                          ImageUploader $imageUploader)
   {
-    $imageFile = $request->files->get('file');
+    $file = $request->files->get('file');
 
-    if ($imageFile) {
-      $imageFileName = $imageUploader->upload($imageFile);
+    if ($file) {
+      $imageFile = $imageUploader->upload($file);
       $media = new Media();
-      $media->setName($imageFileName);
-      $media->setSize(152540);
-      $media->setType("image/jpeg");
+      $media->setName($imageFile["name"]);
+      $media->setSize($imageFile["size"]);
+      $media->setType($imageFile["type"]);
       $manager->persist($media);
       $manager->flush();
 

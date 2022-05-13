@@ -45,7 +45,7 @@ class CardController extends ApiController
     $card->setCategory($categoryRepository->find($content["category"]["id"]));
     $card->setValue($content["value"]);
 
-    $card->setFrontImage($mediaRepository->find($content["frontImage"]));
+    $card->setFrontImage($mediaRepository->find($content["frontImageId"]));
 
     // $card->setFrontImage($content["frontImage"]);
     // $card->setBackImage($content["backImage"]);

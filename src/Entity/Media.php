@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=MediaRepository::class)
@@ -14,21 +15,25 @@ class Media
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"cards_list", "card_detail"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"cards_list", "card_detail"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"cards_list", "card_detail"})
      */
     private $size;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Groups({"cards_list", "card_detail"})
      */
     private $type;
 

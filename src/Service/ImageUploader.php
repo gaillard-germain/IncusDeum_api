@@ -23,6 +23,8 @@ class ImageUploader
     $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
     $safeFilename = $this->slugger->slug($originalFilename);
     $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+    $fileSize = $file->getSize();
+    $fileType = $file->getMimeType();
 
     try {
         $file->move($this->getTargetDirectory(), $fileName);
@@ -30,7 +32,7 @@ class ImageUploader
         // ... handle exception if something happens during file upload
     }
 
-    return $fileName;
+    return ["name" => $fileName, "size" => $fileSize, "type" => $fileType];
   }
 
   public function getTargetDirectory()

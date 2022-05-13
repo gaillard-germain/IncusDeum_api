@@ -39,7 +39,7 @@ class Card
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"card_detail"})
+     * @Groups({"cards_list", "card_detail"})
      */
     private $description;
 
@@ -59,20 +59,20 @@ class Card
     /**
      * @ORM\ManyToOne(targetEntity=media::class, inversedBy="cards"))
      * @ORM\JoinColumn(nullable=true)
-     * @Groups({"card_detail"})
+     * @Groups({"cards_list", "card_detail"})
      */
     private $frontImage;
 
     /**
      * @ORM\ManyToOne(targetEntity=media::class, inversedBy="cards"))
      * @ORM\JoinColumn(nullable=true)
-     * @Groups({"card_detail"})
+     * @Groups({"cards_list", "card_detail"})
      */
     private $backImage;
 
     /**
      * @ORM\Column(type="string", length=60, nullable=true)
-     * @Groups({"card_detail"})
+     * @Groups({"cards_list", "card_detail"})
      */
     private $color;
 
