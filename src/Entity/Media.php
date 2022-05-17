@@ -37,6 +37,12 @@ class Media
      */
     private $type;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"cards_list", "card_detail"})
+     */
+    private $url;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +80,18 @@ class Media
     public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(string $url): self
+    {
+        $this->url = $url;
 
         return $this;
     }

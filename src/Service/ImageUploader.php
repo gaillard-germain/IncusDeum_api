@@ -25,6 +25,7 @@ class ImageUploader
     $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
     $fileSize = $file->getSize();
     $fileType = $file->getMimeType();
+    $fileUrl = "http://localhost:8000/images/".$fileName;
 
     try {
         $file->move($this->getTargetDirectory(), $fileName);
@@ -32,7 +33,12 @@ class ImageUploader
         // ... handle exception if something happens during file upload
     }
 
-    return ["name" => $fileName, "size" => $fileSize, "type" => $fileType];
+    return [
+      "name" => $fileName,
+      "size" => $fileSize,
+      "type" => $fileType,
+      "url" => $fileUrl
+    ];
   }
 
   public function getTargetDirectory()
