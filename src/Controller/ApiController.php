@@ -50,7 +50,6 @@ abstract class ApiController extends AbstractController
                 }
             }
         }
-
         return $errors;
     }
 }

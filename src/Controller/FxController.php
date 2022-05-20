@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Annotation\Route;
-use App\Controller\ApiController;
 use App\Repository\FxRepository;
 use App\Entity\Fx;
 use Doctrine\ORM\EntityManagerInterface;

@@ -4,52 +4,39 @@ namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use App\Entity\{Card, Category, Fx, Media};
+use App\Entity\Card;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class CardFixtures extends Fixture
+class CardFixtures extends Fixture implements DependentFixtureInterface
 {
-  const CARD_COUNT = 5;
+  const COUNT = 5;
 
   public function load(ObjectManager $manager): void
   {
-    $front = new Media();
-    $front->setName("front.jpg");
-    $front->setSize(251500);
-    $front->setType("image/jpeg");
-    $front->setUrl("http://localhost:8000/images/front.jpg");
-    $manager->persist($front);
-
-    $back = new Media();
-    $back->setName("back.jpg");
-    $back->setSize(251500);
-    $back->setType("image/jpeg");
-    $back->setUrl("http://localhost:8000/images/back.jpg");
-    $manager->persist($back);
-
-    for ($i = 0; $i < self::CARD_COUNT; $i++) {
-      $category = new Category();
-      $category->setName("Category".$i);
-      $manager->persist($category);
-
-      $fx = new Fx();
-      $fx->setName("Fx".$i);
-      $fx->setValue("+".$i);
-      $manager->persist($fx);
-
+    for ($i = 0; $i < self::COUNT; $i++) {
       $card = new Card();
       $card->setName("Card".$i);
-      $card->setCategory($category);
+      $card->setCategory($this->getReference('category'.random_int(0, CategoryFixtures::COUNT - 1)));
       $card->setValue($i);
-      $card->setFrontImage($front);
-      $card->setBackImage($back);
+      $card->setFrontImage($this->getReference('front'));
+      $card->setBackImage($this->getReference('back'));
       $card->setColor("#3f3429");
       $card->setDescription(
         "_'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'_"
       );
-      $card->addFx($fx);
+      $card->addFx($this->getReference('fx'.random_int(0, FxFixtures::COUNT - 1)));
       $manager->persist($card);
     }
 
     $manager->flush();
+  }
+
+  public function getDependencies()
+  {
+      return [
+          CategoryFixtures::class,
+          FxFixtures::class,
+          MediaFixtures::class
+      ];
   }
 }

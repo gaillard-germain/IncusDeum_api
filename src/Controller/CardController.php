@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\{Response, Request};
-use App\Controller\ApiController;
 use App\Repository\{CardRepository, CategoryRepository, FxRepository, MediaRepository};
 use App\Entity\{Card, Category, Fx};
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,10 +15,11 @@ class CardController extends ApiController
   /**
    * @Route("/card", name="app_card", methods={"GET"})
    */
-  public function index(CardRepository $cardRepository): Response
+  public function index(Request $request, CardRepository $cardRepository): Response
   {
-    $cards = $cardRepository->findAll();
-    return $this->normalizeData($cards, ['cards_list']);
+      $page = $request->get('page');
+      $cards = $cardRepository->findPage($page);
+      return $this->normalizeData($cards, ['cards_list']);
   }
 
   /**

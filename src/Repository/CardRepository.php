@@ -47,6 +47,23 @@ class CardRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+    * @return Card[] Returns an array of Card objects
+    */
+    public function findPage(int $value = 0)
+    {
+        return $this->createQueryBuilder('card')
+            ->leftjoin('card.category', 'cat')
+            ->leftjoin('card.fx', 'fx')
+            ->orderBy('card.name', 'ASC')
+            ->setFirstResult($value * 10)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
     // /**
     //  * @return Card[] Returns an array of Card objects
     //  */

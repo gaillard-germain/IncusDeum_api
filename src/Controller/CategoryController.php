@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Annotation\Route;
-use App\Controller\ApiController;
 use App\Repository\CategoryRepository;
 use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
