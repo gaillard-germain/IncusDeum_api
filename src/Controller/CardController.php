@@ -5,10 +5,9 @@ namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\{Response, Request};
 use App\Repository\{CardRepository, CategoryRepository, FxRepository, MediaRepository};
-use App\Entity\{Card, Category, Fx};
+use App\Entity\Card;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\CardType;
-// use App\Service\ImageUploader;
 
 class CardController extends ApiController
 {
@@ -33,19 +32,25 @@ class CardController extends ApiController
   /**
   * @Route("/card", name="app_card_create", methods={"POST"})
   */
-  public function create(Request $request, EntityManagerInterface $manager,
+  public function create(Request $request, CardRepository $cardRepository,
+                         EntityManagerInterface $manager,
                          CategoryRepository $categoryRepository,
                          FxRepository $fxRepository,
                          MediaRepository $mediaRepository)
   {
     $content = json_decode($request->getContent(), true);
 
-    $card = new Card();
+    if($content["id"]) {
+        $cards = $cardRepository->find($content["id"]);
+    } else {
+        $card = new Card();
+    };
+
     $card->setName($content["name"]);
     $card->setCategory($categoryRepository->find($content["category"]["id"]));
     $card->setValue($content["value"]);
     $card->setFrontImage($mediaRepository->find($content["frontImageId"]));
-    $card->setBackImage($mediaRepository->find(2));
+    $card->setBackImage($mediaRepository->find(7));
     $card->setColor($content["color"]);
     $card->setDescription($content["description"]);
     foreach ($content["fx"] as $fx) {

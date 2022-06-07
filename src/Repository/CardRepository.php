@@ -53,8 +53,10 @@ class CardRepository extends ServiceEntityRepository
     public function findPage(int $value = 0)
     {
         return $this->createQueryBuilder('card')
-            ->leftjoin('card.category', 'cat')
+            ->leftjoin('card.category', 'category')
             ->leftjoin('card.fx', 'fx')
+            ->addSelect('category')
+            ->addSelect('fx')
             ->orderBy('card.name', 'ASC')
             ->setFirstResult($value * 10)
             ->setMaxResults(10)
