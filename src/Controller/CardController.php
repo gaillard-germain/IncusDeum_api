@@ -41,7 +41,7 @@ class CardController extends ApiController
     $content = json_decode($request->getContent(), true);
 
     if($content["id"]) {
-        $cards = $cardRepository->find($content["id"]);
+        $card = $cardRepository->find($content["id"]);
     } else {
         $card = new Card();
     };
@@ -49,8 +49,8 @@ class CardController extends ApiController
     $card->setName($content["name"]);
     $card->setCategory($categoryRepository->find($content["category"]["id"]));
     $card->setValue($content["value"]);
-    $card->setFrontImage($mediaRepository->find($content["frontImageId"]));
-    $card->setBackImage($mediaRepository->find(7));
+    $card->setFrontImage($mediaRepository->find($content["frontImage"]["id"]));
+    $card->setBackImage($mediaRepository->find(4));
     $card->setColor($content["color"]);
     $card->setDescription($content["description"]);
     foreach ($content["fx"] as $fx) {
