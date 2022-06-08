@@ -50,7 +50,7 @@ class CardController extends ApiController
     $card->setCategory($categoryRepository->find($content["category"]["id"]));
     $card->setValue($content["value"]);
     $card->setFrontImage($mediaRepository->find($content["frontImage"]["id"]));
-    $card->setBackImage($mediaRepository->find(4));
+    $card->setBackImage($mediaRepository->findOneBy(["safeName" => "back"]));
     $card->setColor($content["color"]);
     $card->setDescription($content["description"]);
     foreach ($content["fx"] as $fx) {

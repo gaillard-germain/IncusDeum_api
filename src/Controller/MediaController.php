@@ -29,18 +29,23 @@ class MediaController extends AbstractController
 
     if ($file) {
       $imageFile = $imageUploader->upload($file);
-      $media = new Media();
-      $media->setName($imageFile["name"]);
-      $media->setSize($imageFile["size"]);
-      $media->setType($imageFile["type"]);
-      $media->setUrl($imageFile["url"]);
-      $manager->persist($media);
-      $manager->flush();
 
-      return $this->json(["id" => $media->getId()], 200);
+      if ($imageFile["id"]) {
+        return $this->json(["id" => $imageFile["id"]], 200);
+      } else {
+        $media = new Media();
+        $media->setSafeName($imageFile["safeName"]);
+        $media->setName($imageFile["name"]);
+        $media->setSize($imageFile["size"]);
+        $media->setType($imageFile["type"]);
+        $media->setUrl($imageFile["url"]);
+        $manager->persist($media);
+        $manager->flush();
+
+        return $this->json(["id" => $media->getId()], 200);
+      }
     }
 
     return $this->json(["error" => "no file!"], 404);
-
   }
 }

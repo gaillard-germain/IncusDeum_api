@@ -43,6 +43,11 @@ class Media
      */
     private $url;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $safeName;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,6 +97,18 @@ class Media
     public function setUrl(string $url): self
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function getSafeName(): ?string
+    {
+        return $this->safeName;
+    }
+
+    public function setSafeName(string $safeName): self
+    {
+        $this->safeName = $safeName;
 
         return $this;
     }

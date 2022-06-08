@@ -17,7 +17,7 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
       $card = new Card();
       $card->setName("Card".$i);
       $card->setCategory($this->getReference('category'.random_int(0, CategoryFixtures::COUNT - 1)));
-      $card->setValue($i);
+      $card->setValue(random_int(1, 20));
       $card->setFrontImage($this->getReference('front'));
       $card->setBackImage($this->getReference('back'));
       $card->setColor("#3f3429");

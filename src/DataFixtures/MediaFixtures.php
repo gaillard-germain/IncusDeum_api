@@ -11,6 +11,7 @@ class MediaFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $front = new Media();
+        $front->setSafeName("front");
         $front->setName("front.jpg");
         $front->setSize(251500);
         $front->setType("image/jpeg");
@@ -19,6 +20,7 @@ class MediaFixtures extends Fixture
         $manager->persist($front);
 
         $back = new Media();
+        $back->setSafeName("back");
         $back->setName("back.jpg");
         $back->setSize(251500);
         $back->setType("image/jpeg");
