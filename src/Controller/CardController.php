@@ -67,4 +67,14 @@ class CardController extends ApiController
 
     return $this->json($content);
   }
+
+  /**
+  * @Route("/card/{id}", name="app_card_delete", methods={"DELETE"})
+  */
+  public function delete(Card $card, EntityManagerInterface $manager)
+  {
+    $manager->remove($card);
+    $manager->flush();
+    return new Response('', 204);
+  }
 }

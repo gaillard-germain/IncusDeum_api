@@ -23,7 +23,7 @@ class CardRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Card::class);
-        $this->objectPerPage = 2;
+        $this->objectPerPage = 10;
     }
 
     /**
