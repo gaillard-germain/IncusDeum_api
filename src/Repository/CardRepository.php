@@ -18,9 +18,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CardRepository extends ServiceEntityRepository
 {
+    private $objectPerPage;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Card::class);
+        $this->objectPerPage = 2;
     }
 
     /**
@@ -50,7 +53,7 @@ class CardRepository extends ServiceEntityRepository
     /**
     * @return Card[] Returns an array of Card objects
     */
-    public function findPage(int $value = 0)
+    public function findPage(int $page = 1)
     {
         return $this->createQueryBuilder('card')
             ->leftjoin('card.category', 'category')
@@ -58,11 +61,24 @@ class CardRepository extends ServiceEntityRepository
             ->addSelect('category')
             ->addSelect('fx')
             ->orderBy('card.name', 'ASC')
-            ->setFirstResult($value * 10)
-            ->setMaxResults(10)
+            ->setFirstResult(($page - 1 )* $this->objectPerPage)
+            ->setMaxResults($this->objectPerPage)
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    /**
+    * @return int Returns the number of pages
+    */
+    public function countPage()
+    {
+      $totalCards = $this->createQueryBuilder('card')
+      ->select('count(card.id)')
+      ->getQuery()
+      ->getSingleScalarResult();
+
+      return intval(ceil($totalCards / $this->objectPerPage));
     }
 
 

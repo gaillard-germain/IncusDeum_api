@@ -14,11 +14,16 @@ class CardController extends ApiController
   /**
    * @Route("/card", name="app_card", methods={"GET"})
    */
-  public function index(Request $request, CardRepository $cardRepository): Response
+  public function index(Request $request,
+                        CardRepository $cardRepository): Response
   {
       $page = $request->get('page');
       $cards = $cardRepository->findPage($page);
-      return $this->normalizeData($cards, ['cards_list']);
+      $pages = $cardRepository->countPage();
+      return $this->normalizeData(
+        ["cards" => $cards, "pages" => $pages],
+        ['cards_list']
+      );
   }
 
   /**
