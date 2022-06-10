@@ -45,6 +45,7 @@ class Media
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"cards_list", "card_detail"})
      */
     private $safeName;
 

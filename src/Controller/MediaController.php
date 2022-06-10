@@ -2,14 +2,14 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Media;
+use App\Form\MediaType;
 use App\Service\ImageUploader;
 
-class MediaController extends AbstractController
+class MediaController extends ApiController
 {
   /**
    * @Route("/media", name="app_media", methods={"GET"})
@@ -28,24 +28,30 @@ class MediaController extends AbstractController
     $file = $request->files->get('file');
 
     if ($file) {
-      $imageFile = $imageUploader->upload($file);
+      $imageInfo = $imageUploader->upload($file);
 
-      if ($imageFile["id"]) {
-        return $this->json(["id" => $imageFile["id"]], 200);
-      } else {
+      if ($imageInfo['media']) {
+        return $this->normalizeData($imageInfo['media'], ['card_detail'], 200);
+      } elseif ($imageInfo['data']) {
+
         $media = new Media();
-        $media->setSafeName($imageFile["safeName"]);
-        $media->setName($imageFile["name"]);
-        $media->setSize($imageFile["size"]);
-        $media->setType($imageFile["type"]);
-        $media->setUrl($imageFile["url"]);
-        $manager->persist($media);
-        $manager->flush();
+        $form = $this->createForm(MediaType::class, $media);
 
-        return $this->json(["id" => $media->getId()], 200);
+        $form->submit($imageInfo['data']);
+
+        if($form->isSubmitted() && $form->isValid()) {
+          $manager->persist($media);
+          $manager->flush();
+          return $this->normalizeData($media, ['card_detail'], 201);
+        }
+
+        return $this->normalizeData(['errors' => $this->formErrors($form)], [],
+                                    401);
+
+      } else {
+        return $this->json(["error" => "Bad file!"], 415);
       }
     }
-
-    return $this->json(["error" => "no file!"], 404);
+    return $this->json(["error" => "No file!"], 404);
   }
 }
