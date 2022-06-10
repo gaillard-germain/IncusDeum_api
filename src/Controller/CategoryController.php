@@ -6,7 +6,6 @@ use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\CategoryRepository;
 use App\Entity\Category;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Form\CategoryType;
 
 class CategoryController extends ApiController
@@ -23,7 +22,8 @@ class CategoryController extends ApiController
      /**
      * @Route("/category", name="app_category_create", methods={"POST"})
      */
-     public function create(Request $request, EntityManagerInterface $manager)
+     public function create(Request $request,
+                            CategoryRepository $categoryRepository)
      {
        $category = new Category();
        $form = $this->createForm(CategoryType::class, $category);
@@ -33,8 +33,8 @@ class CategoryController extends ApiController
        $form->handleRequest($request);
 
        if($form->isSubmitted() && $form->isValid()) {
-         $manager->persist($category);
-         $manager->flush();
+         $categoryRepository->add($category);
+
          return $this->normalizeData($category, ['card_detail'], 201);
        }
 

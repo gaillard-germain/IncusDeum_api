@@ -6,7 +6,6 @@ use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\FxRepository;
 use App\Entity\Fx;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Form\FxType;
 
 class FxController extends ApiController
@@ -23,7 +22,7 @@ class FxController extends ApiController
      /**
      * @Route("/fx", name="app_fx_create", methods={"POST"})
      */
-     public function create(Request $request, EntityManagerInterface $manager)
+     public function create(Request $request, FxRepository $fxRepository)
      {
        $fx = new Fx();
        $form = $this->createForm(FxType::class, $fx);
@@ -33,8 +32,8 @@ class FxController extends ApiController
        $form->handleRequest($request);
 
        if($form->isSubmitted() && $form->isValid()) {
-         $manager->persist($fx);
-         $manager->flush();
+         $fxRepository->add($fx);
+
          return $this->normalizeData($fx, ['card_detail'], 201);
        }
 

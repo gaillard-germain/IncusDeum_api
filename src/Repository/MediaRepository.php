@@ -21,7 +21,7 @@ class MediaRepository extends ServiceEntityRepository
         parent::__construct($registry, Media::class);
     }
 
-    public function add(Media $entity, bool $flush = false): void
+    public function add(Media $entity, bool $flush = true): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class MediaRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Media $entity, bool $flush = false): void
+    public function remove(Media $entity, bool $flush = true): void
     {
         $this->getEntityManager()->remove($entity);
 

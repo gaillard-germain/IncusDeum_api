@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Media;
 use App\Form\MediaType;
 use App\Service\ImageUploader;
+use App\Repository\MediaRepository;
 
 class MediaController extends ApiController
 {
@@ -22,7 +22,7 @@ class MediaController extends ApiController
   /**
    * @Route("/media", name="app_create_media", methods={"POST"})
    */
-  public function create(EntityManagerInterface $manager, Request $request,
+  public function create(MediaRepository $mediaRepository, Request $request,
                          ImageUploader $imageUploader)
   {
     $file = $request->files->get('file');
@@ -40,8 +40,8 @@ class MediaController extends ApiController
         $form->submit($imageInfo['data']);
 
         if($form->isSubmitted() && $form->isValid()) {
-          $manager->persist($media);
-          $manager->flush();
+          $mediaRepository->add($media);
+
           return $this->normalizeData($media, ['card_detail'], 201);
         }
 

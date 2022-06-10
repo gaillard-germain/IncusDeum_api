@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Card;
+use App\Entity\Media;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -81,6 +82,20 @@ class CardRepository extends ServiceEntityRepository
       return intval(ceil($totalCards / $this->objectPerPage));
     }
 
+    /**
+    * @return int Returns the number of cards with image given
+    */
+    public function countCardImage(Media $media)
+    {
+      $nbrCards = $this->createQueryBuilder('card')
+      ->select('count(card.id)')
+      ->where('card.frontImage = :media')
+      ->setParameter('media', $media)
+      ->getQuery()
+      ->getSingleScalarResult();
+
+      return $nbrCards;
+    }
 
     // /**
     //  * @return Card[] Returns an array of Card objects

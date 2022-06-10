@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\{Response, Request};
 use App\Repository\{CardRepository, CategoryRepository, FxRepository, MediaRepository};
 use App\Entity\Card;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Form\CardType;
+use App\Service\ImageUploader;
 
 class CardController extends ApiController
 {
@@ -38,7 +39,6 @@ class CardController extends ApiController
   * @Route("/card", name="app_card_create", methods={"POST"})
   */
   public function create(Request $request, CardRepository $cardRepository,
-                         EntityManagerInterface $manager,
                          CategoryRepository $categoryRepository,
                          FxRepository $fxRepository,
                          MediaRepository $mediaRepository)
@@ -62,19 +62,31 @@ class CardController extends ApiController
       $card->addFx($fxRepository->find($fx["id"]));
     }
 
-    $manager->persist($card);
-    $manager->flush();
+    $cardRepository->add($card);
 
-    return $this->json($content);
+    return $this->normalizeData($card, ['card_detail'], 201);
   }
 
   /**
   * @Route("/card/{id}", name="app_card_delete", methods={"DELETE"})
   */
-  public function delete(Card $card, EntityManagerInterface $manager)
+  public function delete(Card $card, CardRepository $cardRepository,
+                         MediaRepository $mediaRepository,
+                         ImageUploader $imageUploader)
   {
-    $manager->remove($card);
-    $manager->flush();
-    return new Response('', 204);
+    $media = $card->getFrontImage();
+    $cardRepository->remove($card);
+
+    $cardImageNbr = $cardRepository->countCardImage($media);
+    if ($cardImageNbr < 2) {
+
+      $filename = $media->getName();
+      $filesystem = new Filesystem();
+      $filesystem->remove($imageUploader->getTargetDirectory().'/'.$filename);
+
+      $mediaRepository->remove($media);
+    }
+
+    return $this->json(['path' => $imageUploader->getTargetDirectory().'/'.$filename]);
   }
 }
