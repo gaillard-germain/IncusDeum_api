@@ -54,14 +54,16 @@ class CardRepository extends ServiceEntityRepository
     /**
     * @return Card[] Returns an array of Card objects
     */
-    public function findPage(int $page = 1)
+    public function findPage(int $page = 1, string $value = 'name', string $dir = 'ASC')
     {
+        $order = 'card.'.$value;
+
         return $this->createQueryBuilder('card')
             ->leftjoin('card.category', 'category')
             ->leftjoin('card.fx', 'fx')
             ->addSelect('category')
             ->addSelect('fx')
-            ->orderBy('card.name', 'ASC')
+            ->orderBy($order, $dir)
             ->setFirstResult(($page - 1 )* $this->objectPerPage)
             ->setMaxResults($this->objectPerPage)
             ->getQuery()

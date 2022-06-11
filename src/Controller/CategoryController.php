@@ -33,7 +33,11 @@ class CategoryController extends ApiController
        $form->handleRequest($request);
 
        if($form->isSubmitted() && $form->isValid()) {
-         $categoryRepository->add($category);
+         try {
+           $categoryRepository->add($category);
+         } catch (\Exception $e) {
+           return new Response("This category already exists!", 409);
+         }
 
          return $this->normalizeData($category, ['card_detail'], 201);
        }

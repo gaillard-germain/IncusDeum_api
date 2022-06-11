@@ -14,8 +14,8 @@ class FxFixtures extends Fixture
     {
         for ($i = 0; $i < self::COUNT; $i++) {
           $fx = new Fx();
-          $fx->setName("Fx".$i);
-          $fx->setValue("+".$i);
+          $fx->setName("Effect".$i);
+          $fx->setValue("+".random_int(1, 5));
           $this->addReference('fx'.$i, $fx);
           $manager->persist($fx);
       }

@@ -19,7 +19,14 @@ class CardController extends ApiController
                         CardRepository $cardRepository): Response
   {
       $page = $request->get('page');
-      $cards = $cardRepository->findPage($page);
+      $order = $request->get('order');
+      $asc = $request->get('asc');
+      if ($asc == "true") {
+        $dir = 'ASC';
+      } else {
+        $dir = 'DESC';
+      }
+      $cards = $cardRepository->findPage($page, $order, $dir);
       $pages = $cardRepository->countPage();
       return $this->normalizeData(
         ["cards" => $cards, "pages" => $pages],
@@ -61,8 +68,11 @@ class CardController extends ApiController
     foreach ($content["fx"] as $fx) {
       $card->addFx($fxRepository->find($fx["id"]));
     }
-
-    $cardRepository->add($card);
+    try {
+      $cardRepository->add($card);
+    } catch (\Exception $e) {
+      return new Response("This card's name already exists!", 409);
+    }
 
     return $this->normalizeData($card, ['card_detail'], 201);
   }

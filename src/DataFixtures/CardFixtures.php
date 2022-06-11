@@ -9,7 +9,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class CardFixtures extends Fixture implements DependentFixtureInterface
 {
-  const COUNT = 5;
+  const COUNT = 25;
 
   public function load(ObjectManager $manager): void
   {
@@ -20,7 +20,7 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
       $card->setValue(random_int(1, 20));
       $card->setFrontImage($this->getReference('front'));
       $card->setBackImage($this->getReference('back'));
-      $card->setColor("#3f3429");
+      $card->setColor("#474543");
       $card->setDescription(
         "_'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'_"
       );
