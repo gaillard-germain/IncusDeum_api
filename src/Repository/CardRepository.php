@@ -54,7 +54,7 @@ class CardRepository extends ServiceEntityRepository
     /**
     * @return Card[] Returns an array of Card objects
     */
-    public function findPage(int $page = 1, string $value = 'name', string $dir = 'ASC')
+    public function findPage(int $page = 0, string $value = 'name', string $dir = 'ASC')
     {
         $order = 'card.'.$value;
 
@@ -63,9 +63,9 @@ class CardRepository extends ServiceEntityRepository
             ->leftjoin('card.fx', 'fx')
             ->addSelect('category')
             ->addSelect('fx')
-            ->orderBy($order, $dir)
-            ->setFirstResult(($page - 1 )* $this->objectPerPage)
             ->setMaxResults($this->objectPerPage)
+            ->setFirstResult(($page * $this->objectPerPage))
+            ->orderBy($order, $dir)
             ->getQuery()
             ->getResult()
         ;
@@ -81,7 +81,7 @@ class CardRepository extends ServiceEntityRepository
       ->getQuery()
       ->getSingleScalarResult();
 
-      return intval(ceil($totalCards / $this->objectPerPage));
+      return ceil($totalCards / $this->objectPerPage);
     }
 
     /**

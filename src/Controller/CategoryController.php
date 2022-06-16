@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\HttpFoundation\{Response, Request};
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\CategoryRepository;
@@ -35,7 +36,7 @@ class CategoryController extends ApiController
        if($form->isSubmitted() && $form->isValid()) {
          try {
            $categoryRepository->add($category);
-         } catch (\Exception $e) {
+         } catch (UniqueConstraintViolationException $e) {
            return new Response("This category already exists!", 409);
          }
 

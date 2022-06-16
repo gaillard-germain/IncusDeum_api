@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\{Response, Request};
@@ -18,16 +19,17 @@ class CardController extends ApiController
   public function index(Request $request,
                         CardRepository $cardRepository): Response
   {
-      $page = $request->get('page');
+      $page = $request->get('page') - 1;
       $order = $request->get('order');
       $asc = $request->get('asc');
-      if ($asc == "true") {
+      if ($asc === 'true') {
         $dir = 'ASC';
       } else {
         $dir = 'DESC';
       }
       $cards = $cardRepository->findPage($page, $order, $dir);
       $pages = $cardRepository->countPage();
+
       return $this->normalizeData(
         ["cards" => $cards, "pages" => $pages],
         ['cards_list']
@@ -61,8 +63,19 @@ class CardController extends ApiController
     $card->setName($content["name"]);
     $card->setCategory($categoryRepository->find($content["category"]["id"]));
     $card->setValue($content["value"]);
-    $card->setFrontImage($mediaRepository->find($content["frontImage"]["id"]));
-    $card->setBackImage($mediaRepository->findOneBy(["safeName" => "back"]));
+    
+    if ($content["frontImage"]["id"]) {
+      $card->setFrontImage($mediaRepository->find($content["frontImage"]["id"]));
+    } else {
+      $card->setFrontImage($mediaRepository->findOneBy(["safeName" => "front"]));
+    }
+
+    if ($content["backImage"]["id"]) {
+      $card->setBackImage($mediaRepository->find($content["backImage"]["id"]));
+    } else {
+      $card->setBackImage($mediaRepository->findOneBy(["safeName" => "back"]));
+    }
+
     $card->setColor($content["color"]);
     $card->setDescription($content["description"]);
     foreach ($content["fx"] as $fx) {
@@ -70,7 +83,7 @@ class CardController extends ApiController
     }
     try {
       $cardRepository->add($card);
-    } catch (\Exception $e) {
+    } catch (UniqueConstraintViolationException $e) {
       return new Response("This card's name already exists!", 409);
     }
 
@@ -88,7 +101,7 @@ class CardController extends ApiController
     $cardRepository->remove($card);
 
     $cardImageNbr = $cardRepository->countCardImage($media);
-    if ($cardImageNbr < 2) {
+    if ($cardImageNbr < 1) {
 
       $filename = $media->getName();
       $filesystem = new Filesystem();
@@ -97,6 +110,6 @@ class CardController extends ApiController
       $mediaRepository->remove($media);
     }
 
-    return $this->json(['path' => $imageUploader->getTargetDirectory().'/'.$filename]);
+    return new Response("Removed ".$card->getName(), 200);
   }
 }
