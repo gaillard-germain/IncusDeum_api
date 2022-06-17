@@ -91,7 +91,7 @@ class CardRepository extends ServiceEntityRepository
     {
       $nbrCards = $this->createQueryBuilder('card')
       ->select('count(card.id)')
-      ->where('card.frontImage = :media')
+      ->where('card.frontImage = :media OR card.backImage = :media')
       ->setParameter('media', $media)
       ->getQuery()
       ->getSingleScalarResult();
